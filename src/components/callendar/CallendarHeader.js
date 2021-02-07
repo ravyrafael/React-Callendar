@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Icon from '@material-ui/core/Icon';
 import moment from 'moment'
 import IconButton from '@material-ui/core/IconButton';
-import { nextMonth , prevMonth} from '../stores/callendarSlice'
+import { nextMonth , prevMonth} from '../../stores/callendarSlice'
 
 export const IconCenter = styled(Icon)`
     vertical-align:middle;
@@ -23,7 +23,9 @@ const getWeekDays = () => {
 const CallendarHeader = () => {
     const dispatch = useDispatch()
 
-    const currentDate = useSelector(({ callendar }) => callendar.currentDate)
+    const date = useSelector(({ callendar }) => callendar.currentDate)
+    const currentDate = moment(date)
+    
     return (
         <>
             <div className="month-indicator">
@@ -37,8 +39,8 @@ const CallendarHeader = () => {
 
             </div>
             <div className="day-of-week">
-                {getWeekDays().map(item =>
-                    <div>{item}</div>
+                {getWeekDays().map((item , i) =>
+                    <div key={i}>{item}</div>
                 )}
             </div>
         </>)
