@@ -16,7 +16,7 @@ export default function App() {
 
 
   return (
-    <Provider store={store} data-testId="App">
+    <Provider store={store} data-testid="App">
       <Container>
         <Callendar/>
       </Container>

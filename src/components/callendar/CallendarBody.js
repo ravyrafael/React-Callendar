@@ -109,7 +109,7 @@ const CallendarBody = () => {
                     return (
                         <DayBlock
                             id={"day-block"+i}
-                            data-testId={"day-block"+i}
+                            data-testid={"day-block"+i}
 
                             key={i} scroll={dayEvents&& dayEvents.length>3} 
                             onClick={() => { dispatch(newEvent(moment(item.day).format('L'))) }} 
@@ -121,7 +121,11 @@ const CallendarBody = () => {
                                 <div style={{    marginLeft: '25px'}} >
                                     {   dayEvents
                                         .map((event, i) => (
-                                            <EventBlock onClick={(e) => handleEditEvent(e, event)} color={event.color}>{moment(event.date).format("HH:mm")} - {event.title}</EventBlock>
+                                            <EventBlock 
+                                                id={"event-"+event.title.split(' ').join('-')}
+                                                key={i} 
+                                                onClick={(e) => handleEditEvent(e, event)} 
+                                                color={event.color}>{moment(event.date).format("HH:mm")} - {event.title}</EventBlock>
                                         ))}
                                 </div>
                             </div>

@@ -25,10 +25,9 @@ import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: 'fit-content',
+    '& > div':{
+      margin:'10px 0'
+    }
   },
   appBar: {
     position: 'relative',
@@ -65,38 +64,45 @@ export default function EventDialog() {
     handleClose()
   }
 
-  const getWeather = async () => {
-    if (form.city && form.date) {
-      let formDate = moment(moment(form.date).format('YYYY-MM-DD'))
-      let dayInFuture = formDate.diff(moment(moment().format('YYYY-MM-DD')), "days") + 1
-      console.log(dayInFuture)
-
-      if (dayInFuture > 0 && dayInFuture <= 10) {
-        let { data } = await weatherApi.get(form.city, dayInFuture)
-        console.log(formDate.format('YYYY-MM-DD'))
-        let dateForecast = data.forecast.forecastday.find(forecast => forecast.date === formDate.format('YYYY-MM-DD'))
-        console.log(dateForecast)
-        if (dateForecast) {
-          setInForm("condition", dateForecast.day.condition.text)
-          setInForm("conditionIcon", dateForecast.day.condition.icon)
-        }
-        else{
-          setInForm("condition", "")
-          setInForm("conditionIcon", "")
+  React.useEffect(() => {
+    
+    const getWeather = async () => {
+      if (form.city && form.date) {
+        let formDate = moment(moment(form.date).format('YYYY-MM-DD'))
+        let dayInFuture = formDate.diff(moment(moment().format('YYYY-MM-DD')), "days") + 1
+        console.log(dayInFuture)
+  
+        if (dayInFuture > 0 && dayInFuture <= 10) {
+          let { data } = await weatherApi.get(form.city, dayInFuture)
+          console.log(formDate.format('YYYY-MM-DD'))
+          let dateForecast = data.forecast.forecastday.find(forecast => forecast.date === formDate.format('YYYY-MM-DD'))
+          console.log(dateForecast)
+          if (dateForecast) {
+            setInForm("condition", dateForecast.day.condition.text)
+            setInForm("conditionIcon", dateForecast.day.condition.icon)
+          }
+          else{
+            setInForm("condition", "")
+            setInForm("conditionIcon", "")
+          }
         }
       }
     }
-  }
+    getWeather()
+  }, [form.date, form.city, setInForm])
 
   React.useEffect(() => {
+    
     setForm(event.event)
-    getWeather()
   }, [event.event, setForm])
-
+  const isValidForm = ()=>{
+    return form.city && form.title && form.description && form.date && form.color
+  }
 
   return (
     <Dialog
-      data-testId="event-dialog"
+      data-testid="event-dialog"
+      id="event-dialog"
       open={event.dialogOpen}
       onClose={handleClose}
       disableBackdropClick
@@ -115,17 +121,17 @@ export default function EventDialog() {
 
       <DialogContent>
 
-        <Grid container>
-          <Grid item xs={12} md={6}>
+        <Grid container >
+          <Grid item xs={12} md={6} className={classes.form}>
             <TextField id="title" name="title" label="Title" onInput={(e) => {
               e.target.value = (e.target.value).slice(0, 30)
             }} value={form.title} onChange={handleChange} />
             <TextField id="description" name="description" label="Description" rows={4} multiline rowsMax={4} value={form.description} onChange={handleChange} />
-            <TextField id="date" type='datetime-local' name="date" label="Date" value={moment(new Date(form.date)).format('YYYY-MM-DDTHH:mm')} onChange={handleChange} onBlur={getWeather} />
+            <TextField id="date" type='datetime-local' name="date" label="Date" value={moment(new Date(form.date)).format('YYYY-MM-DDTHH:mm')} onChange={handleChange} />
           </Grid>
           <Grid item container xs={12} sm={6}>
-            <Grid item xs={12}>
-              <TextField id="city" name="city" label="City" value={form.city} onChange={handleChange} onBlur={getWeather} />
+            <Grid item xs={12} className={classes.form}>
+              <TextField id="city" name="city" label="City" value={form.city} onChange={handleChange} />
               <TextField id="color" className={classes.textField} type="color" name="color" label="Color" value={form.color} onChange={handleChange} />
               <Grid item xs={12}>
                 {form.conditionIcon && <Avatar alt="forecast icon" src={form.conditionIcon} />}
@@ -136,10 +142,10 @@ export default function EventDialog() {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleEvent} color="primary">
+        <Button id="save" onClick={handleEvent} disabled={!isValidForm()} color="primary">
           Save
           </Button>
-        {form.id && <Button onClick={handleDelete} color="primary">
+        {form.id && <Button id="delete" onClick={handleDelete} color="primary">
           delete
           </Button>}
       </DialogActions>
