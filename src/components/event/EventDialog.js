@@ -70,13 +70,13 @@ export default function EventDialog() {
       if (form.city && form.date) {
         let formDate = moment(moment(form.date).format('YYYY-MM-DD'))
         let dayInFuture = formDate.diff(moment(moment().format('YYYY-MM-DD')), "days") + 1
-        console.log(dayInFuture)
+
   
         if (dayInFuture > 0 && dayInFuture <= 10) {
           let { data } = await weatherApi.get(form.city, dayInFuture)
-          console.log(formDate.format('YYYY-MM-DD'))
+
           let dateForecast = data.forecast.forecastday.find(forecast => forecast.date === formDate.format('YYYY-MM-DD'))
-          console.log(dateForecast)
+
           if (dateForecast) {
             setInForm("condition", dateForecast.day.condition.text)
             setInForm("conditionIcon", dateForecast.day.condition.icon)

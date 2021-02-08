@@ -26,7 +26,6 @@ const callendarSlice = createSlice({
       },
       handleCallendarEvent: (state,action)=>{
         const date = moment(action.payload.date).format('YYYY-MM-DDTHH:mm')
-        console.log(action.payload.id)
           if(!action.payload.id){
           const newEvent = {
             ...action.payload,
